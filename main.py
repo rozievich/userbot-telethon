@@ -1,26 +1,30 @@
-from telethon.sync import TelegramClient
-from config import api_hash, api_id
+from telethon import TelegramClient, events
+from config import API_ID, API_HASH, TO_GROUP
 
 
-async def send_message_to_user(client, user_id, message):
-    await client.send_message(user_id, message)
+# Filtr so'zlari ro'yxati
+filter_words = ['odam olamiz', 'yuramiz', 'kishi kerak']
 
+# Telegram klientini yaratish
+client = TelegramClient('rozievich', API_ID, API_HASH)
 
-async def send_message_to_all_users(client, users, message):
-    for user in users:
-        await client.send_message(user, message)
-
+@client.on(events.NewMessage)
+async def handler(event):
+    # Faqat guruhlardagi xabarlarni qabul qilish
+    if event.is_group:
+        message_text = event.message.message
+        # Filtr so'zlarini tekshirish
+        if any(word in message_text for word in filter_words):
+            # Xabarni maqsad guruhiga forward qilish
+            await client.forward_messages(TO_GROUP, event.message)
 
 async def main():
-    client = TelegramClient('send_message_data', api_id, api_hash)
-
-    async with client:
-        user_ids = [6066967779, -1002078072933]
-        for user_id in user_ids:
-            await send_message_to_user(client, user_id, "Assalomu alaykum!")
-        await send_message_to_all_users(client, user_ids, "Hamma foydalanuvchilarga salom!")
-
+    # Telegram klientini ishga tushirish
+    await client.start()
+    print("Bot ishga tushdi.")
+    # Botni uzluksiz ishga tushirish
+    await client.run_until_disconnected()
 
 if __name__ == '__main__':
-    import asyncio
-    asyncio.run(main())
+    # Asinxron funksiyani ishga tushirish
+    client.loop.run_until_complete(main())
