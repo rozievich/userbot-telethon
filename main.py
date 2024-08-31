@@ -28,6 +28,7 @@ async def main():
 
                     # Xabarni asosiy guruhga forward qilish
                     await forward_message(client, main_group_id, event.message, user_name, user_telegram, user_phone, group)
+                    await asyncio.sleep(0.033)
 
         print("Bot ishlamoqda...")
         await client.run_until_disconnected()
