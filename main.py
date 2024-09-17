@@ -9,7 +9,7 @@ async def forward_message(client, target_group, message, user_name, user_telegra
 
 
 async def main():
-    client = TelegramClient('taxi_bot', api_id, api_hash)
+    client = TelegramClient('user_bot', api_id, api_hash)
 
     async with client:
         @client.on(events.NewMessage(chats=await client.get_dialogs()))
@@ -18,7 +18,7 @@ async def main():
                 message_text = event.message.message.lower()  # Xabar matnini kichik harflarga aylantirish
 
                 # Xabar ichida filter so'zlar mavjudligini tekshirish
-                if any(word in message_text for word in filter_words):
+                if any(word in message_text.lower() for word in filter_words):
                     # Foydalanuvchi haqida ma'lumot olish
                     sender = await event.get_sender()
                     user_name = f'<a href="tg://user?id={sender.id}">{sender.first_name}</a>'
