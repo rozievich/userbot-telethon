@@ -2,8 +2,17 @@ import sys
 import asyncio
 import logging
 from telethon.sync import TelegramClient, events
-from config import api_hash, api_id, filter_words, main_group_id
+from config import api_hash, api_id, filter_words, main_group_id, block_list
 
+
+
+async def check_word(message: str) -> bool:
+    if any(block in message for block in block_list):
+        return False
+    elif any(word in message for word in filter_words):
+        return True
+    else:
+        return False
 
 
 async def forward_message(client, target_group, message, user_name, user_telegram, user_phone, group):
@@ -25,7 +34,7 @@ async def main():
                     message_text = event.message.message.lower()  # Xabar matnini kichik harflarga aylantirish
 
                     # Xabar ichida filter so'zlar mavjudligini tekshirish
-                    if any(word in message_text.lower() for word in filter_words):
+                    if await check_word(message_text):
                         # Foydalanuvchi haqida ma'lumot olish
                         sender = await event.get_sender()
                         user_name = f'<a href="tg://user?id={sender.id}">{sender.first_name}</a>'
