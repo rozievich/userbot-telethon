@@ -16,7 +16,7 @@ async def check_word(message: str) -> bool:
 
 
 async def forward_message(client, target_group, message, user_name, user_telegram, user_phone, group):
-    formatted_message = f"<b>Xabar:</b> {message.text}\n\n<b>Ismi:</b> {user_name}\n<b>Username:</b> {user_telegram}\n<b>Telefon raqam:</b> {user_phone or 'Noma’lum'}\n<b>Guruh:</b> {group}"
+    formatted_message = f"<b>Xabar:</b> {message.text}\n\n<b>Ismi:</b> {user_name}\n<b>Username:</b> {user_telegram}\n<b>Telefon raqam:</b> {f'+{user_phone}' if user_phone else 'Noma’lum'}\n<b>Guruh:</b> {group}"
     try:
         await client.send_message(target_group, formatted_message, parse_mode='html')
     except Exception as e:
