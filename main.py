@@ -32,7 +32,10 @@ async def main():
                         user_name = f'<a href="tg://user?id={sender.id}">{sender.first_name}</a>'
                         user_telegram = f"@{sender.username}" if sender.username else "Noma'lum"
                         user_phone = sender.phone
-                        group = f"@{event.chat.username}"
+                        if event.chat:
+                            group = f"@{event.chat.username}"
+                        else:
+                            group = f"Maxfiy Guruh"
 
                         # Xabarni asosiy guruhga forward qilish
                         await forward_message(client, main_group_id, event.message, user_name, user_telegram, user_phone, group)
