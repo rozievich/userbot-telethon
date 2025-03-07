@@ -1,7 +1,6 @@
 import sys
 import asyncio
 import logging
-from datetime import datetime
 from random import uniform
 from telethon.sync import TelegramClient, events
 
@@ -38,7 +37,7 @@ async def main():
                             group = f"Maxfiy Guruh"
 
                         # Xabarni asosiy guruhga forward qilish
-                        await forward_message(client, main_group_id, event.message, user_name, user_telegram, user_phone, group)
+                        await forward_message(client, main_group_id, event.message, user_name, user_telegram, user_phone, group, sender.id)
                         await asyncio.sleep(uniform(0.033, 1))
             except Exception as e:
                 print("Main function error: ", e)

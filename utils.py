@@ -1,5 +1,10 @@
+import pytz
 from datetime import datetime
+from telethon.sync import Button
 from config import block_list, filter_words
+
+
+tz_uzbekistan = pytz.timezone("Asia/Tashkent")
 
 
 async def check_word(message: str) -> bool:
@@ -13,13 +18,16 @@ async def check_word(message: str) -> bool:
 
 async def is_sleep_time():
     """02:00 dan 05:00 gacha botni to'xtatish."""
-    now = datetime.now()
-    if now.hour >= 1 and now.hour < 5:  # Agar hozir 01:00 dan 05:00 oralig'ida bo'lsa
+    now = datetime.now(tz_uzbekistan)
+    if now.hour >= 1 and now.hour < 5:
         return True
     return False
 
 
-async def forward_message(client, target_group, message, user_name, user_telegram, user_phone, group):
+async def forward_message(client, target_group, message, user_name, user_telegram, user_phone, group, sender_id):
+    buttons = [
+        [Button.url("📩 Bog'lanish", f"tg://openmessage?user_id={sender_id}")]
+    ]
     formatted_message = (
         f"<b>Xabar:</b> {message.text}\n\n"
         f"<b>Ismi:</b> {user_name}\n"
@@ -29,6 +37,6 @@ async def forward_message(client, target_group, message, user_name, user_telegra
         f"<b>Vaqt:</b> {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
     )
     try:
-        await client.send_message(target_group, formatted_message, parse_mode='html')
+        await client.send_message(target_group, formatted_message, parse_mode='html', buttons=buttons)
     except Exception as e:
         print(e)
